@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08040f">
+<title>For you</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{--night:#08040f;--plum:#2a0f3a;--rose:#ff7aa8;--blush:#ffd3e3;--lav:#a98bff;--gold:#ffc58a}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;overflow:hidden;background:var(--night);color:var(--blush);font-family:"Instrument Serif",Georgia,serif}
+.sky{position:fixed;inset:0;background:radial-gradient(120% 80% at 50% 115%,#5a1646 0%,var(--plum) 38%,#0f0720 70%,var(--night) 100%)}
+.aurora{position:fixed;inset:-25%;filter:blur(80px);mix-blend-mode:screen;opacity:.6}
+.aurora i{position:absolute;border-radius:50%;animation:drift 26s ease-in-out infinite alternate}
+.aurora i:nth-child(1){width:60vmax;height:60vmax;left:0;top:5%;background:#ff4f8b66}
+.aurora i:nth-child(2){width:50vmax;height:50vmax;right:-5%;top:25%;background:#7a4dff66;animation-duration:32s;animation-direction:alternate-reverse}
+.aurora i:nth-child(3){width:42vmax;height:42vmax;left:30%;bottom:-5%;background:#ffa86b4d;animation-duration:38s}
+@keyframes drift{to{transform:translate(10vmax,-8vmax) scale(1.3)}}
+#fx{position:fixed;inset:0;width:100%;height:100%}
+.grain{position:fixed;inset:0;pointer-events:none;opacity:.07;mix-blend-mode:overlay;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.vig{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,transparent 50%,#000b 100%)}
+main{position:fixed;inset:0;display:flex;overflow-y:auto;text-align:center;padding:max(24px,env(safe-area-inset-top)) 24px max(60px,env(safe-area-inset-bottom))}
+#scene{margin:auto;max-width:34rem;position:relative;transition:opacity .6s,filter .6s}
+#scene::before{content:"";position:absolute;inset:-18% -12%;z-index:-1;background:radial-gradient(closest-side,#0a0414b0,transparent)}
+#scene.out{opacity:0;filter:blur(8px)}
+h1{font-weight:400;font-style:italic;font-size:clamp(44px,11vw,84px);line-height:1;letter-spacing:-.01em;color:#fff;text-shadow:0 0 40px #ff7aa8aa,0 0 90px #ff7aa855}
+p{margin-top:1.1em;font-size:clamp(20px,4.8vw,25px);line-height:1.55;text-shadow:0 2px 16px #000a}
+.ln{opacity:0;filter:blur(6px);animation:in 1.2s ease forwards;animation-delay:calc(var(--i)*1.2s + .5s)}
+h1.ln{animation-delay:.1s}
+@keyframes in{to{opacity:1;filter:none}}
+.act{margin-top:2.2rem;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+button{font:inherit;font-size:20px;color:#fff;padding:12px 30px;border-radius:999px;border:1px solid #ffffff40;background:#ffffff14;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);cursor:pointer;transition:transform .25s,background .25s,box-shadow .25s}
+button:hover{transform:scale(1.05);background:#ffffff26}
+button.pri{border:0;background:linear-gradient(135deg,var(--rose),#c25bff);box-shadow:0 8px 34px #ff7aa86b}
+button:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.dots{position:fixed;left:0;right:0;bottom:max(22px,env(safe-area-inset-bottom));display:flex;gap:9px;justify-content:center;pointer-events:none}
+.dots b{width:6px;height:6px;border-radius:9px;background:#ffffff40;transition:.5s}
+.dots b.on{width:22px;background:var(--rose)}
+#music{position:fixed;top:max(16px,env(safe-area-inset-top));right:16px;padding:8px 16px;font-size:16px}
+#music[hidden]{display:none}
+@media(prefers-reduced-motion:reduce){.aurora i{animation:none}}
+</style>
+</head>
+<body>
+<div class="sky"></div>
+<div class="aurora"><i></i><i></i><i></i></div>
+<canvas id="fx"></canvas>
+<div class="grain"></div><div class="vig"></div>
+<main><div id="scene"></div></main>
+<div class="dots" id="dots"></div>
+<button id="music" hidden></button>
+<script>
+/* ============ EDIT ONLY THIS BLOCK ============
+   t = big title, l = lines of text (HTML like <br> works).
+   Add or remove scenes freely. music = optional mp3 link. */
+const CONFIG={
+  music:"",
+  scenes:[
+    {t:"Hey, Samriddhi",l:["I made this page just for you.","Please give me a minute."]},
+    {t:"I'm sorry",l:["hm I completely regret my decision of walking away like that hm vo jo aapne line likhi thi it did hurt me too because I love you so much ki hurting you hurts me also. Mujhe bohot afsos hai ki mere ek reaction ne tumhe itni takleef di I'm sorry. Tum mere liye bohot special ho, sirf issliye nahi ki tum meri girlfriend ho but issliye kyuki tum *tum* ho.",""]},
+    {t:"I see it now",l:["Hm ab dobara aisa kabhi bhi nahi hoga I'm and aisa bhi nahi hoga ki agar tum mujhe jaldi maaf kardo toh mai ye poore incident ko hi bohot lightly le lunga aisa nahi mai ab kabhi bhi tumhe nahi chhod ke jaunga kahi bhi I'm really sorry. I miss you meri jaan, I really miss talking to, I'm really sorry abhi tak jo bhi hua and I'll try ki tumhara birthday bilkul kharab na ho and jitna ho payega I'll do to make it special."]}
+  ],
+  ask:{t:"Will you forgive me, please?",yes:"Yes",later:"I need some time",
+       yesT:"Thank you",yesMsg:"I love you. I'll keep showing it.",
+       laterMsg:"Of course. Take all the time you need. I'll be here."}
+};
+/* ============================================== */
+
+const $=id=>document.getElementById(id),S=CONFIG.scenes,Q=CONFIG.ask,sc=$('scene');
+let i=0,rate=1;
+const ln=(h,k)=>`<p class="ln" style="--i:${k}">${h}</p>`;
+function html(n){
+  if(n<S.length){const s=S[n];
+    return `<h1 class="ln">${s.t}</h1>`+s.l.map((x,k)=>ln(x,k+1)).join('')+
+    `<div class="act ln" style="--i:${s.l.length+1}"><button class="pri" data-a="next">${n==S.length-1?'There is one more thing':'Continue'}</button></div>`}
+  return `<h1 class="ln">${Q.t}</h1><div class="act ln" style="--i:1"><button class="pri" data-a="yes">${Q.yes}</button><button data-a="later">${Q.later}</button></div>`}
+function swap(h,n){sc.classList.add('out');setTimeout(()=>{sc.innerHTML=h;sc.classList.remove('out');if(n!=null){i=n;dots()}},650)}
+function dots(){$('dots').innerHTML=Array.from({length:S.length+1},(_,k)=>`<b class="${k==i?'on':''}"></b>`).join('')}
+sc.innerHTML=html(0);dots();
+sc.addEventListener('click',e=>{
+  const a=e.target.closest('button')?.dataset.a;if(!a)return;
+  if(a=='next')swap(html(i+1),i+1);
+  if(a=='yes'){burst(innerWidth/2,innerHeight*.5,170);rate=4;setTimeout(()=>rate=2.2,6000);swap(`<h1 class="ln">${Q.yesT}</h1>${ln(Q.yesMsg,1)}`)}
+  if(a=='later')swap(`${ln(Q.laterMsg,0)}<div class="act ln" style="--i:2"><button class="pri" data-a="yes">${Q.yes}</button></div>`)
+});
+addEventListener('keydown',e=>{if(e.key=='Enter'&&document.activeElement==document.body)sc.querySelector('[data-a=next]')?.click()});
+if(CONFIG.music){const a=new Audio(CONFIG.music),m=$('music');a.loop=true;m.hidden=false;m.textContent='music off';
+  m.onclick=()=>{if(a.paused){a.play();m.textContent='music on'}else{a.pause();m.textContent='music off'}}}
+
+/* ---------- living background ---------- */
+const cv=$('fx'),c=cv.getContext('2d'),R=(a,b)=>a+Math.random()*(b-a),TAU=Math.PI*2,
+reduce=matchMedia('(prefers-reduced-motion:reduce)').matches,pick=a=>a[(Math.random()*a.length)|0];
+let W,H,D;
+function size(){D=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*D;cv.height=H*D}
+addEventListener('resize',size);size();
+const M={x:.5,y:.5,tx:.5,ty:.5};
+const mk=(w,f)=>{const o=document.createElement('canvas');o.width=o.height=w;f(o.getContext('2d'),w);return o};
+const heart=(g,s)=>{g.beginPath();g.moveTo(0,-.2*s);g.bezierCurveTo(0,-.5*s,-.5*s,-.5*s,-.5*s,-.2*s);g.bezierCurveTo(-.5*s,.1*s,0,.3*s,0,.5*s);g.bezierCurveTo(0,.3*s,.5*s,.1*s,.5*s,-.2*s);g.bezierCurveTo(.5*s,-.5*s,0,-.5*s,0,-.2*s);g.fill()};
+const COL=['#ff7aa8','#ffb3d1','#ff5f8f','#c9a8ff','#ffc58a'];
+const HS=COL.map(col=>mk(64,(g,n)=>{g.translate(n/2,n/2);g.shadowColor=col;g.shadowBlur=14;g.fillStyle=col;heart(g,28)}));
+const OS=COL.map(col=>mk(64,(g,n)=>{const r=g.createRadialGradient(n/2,n/2,0,n/2,n/2,n/2);r.addColorStop(0,'#fff');r.addColorStop(.18,col);r.addColorStop(1,col+'00');g.fillStyle=r;g.fillRect(0,0,n,n)}));
+const P=[];
+function add(o){if(P.length<500)P.push(Object.assign({t:0,p:R(0,TAU),w:R(.6,1.6),sw:0,g:0,vx:0,r:R(-.5,.5),rv:R(-.15,.15),m:0},o))}
+const rise=()=>{const T=R(9,15),z=R(.4,1);add({sp:pick(HS),x:R(0,W),y:H+30,vy:-(H/T)*R(.8,1.1),sw:R(8,24),s:R(8,22)*z+5,a:.45+.4*z,T})};
+const fly=()=>add({sp:pick(OS),x:R(0,W),y:R(0,H),vx:R(-10,10),vy:R(-10,10),sw:R(6,18),s:R(5,14),a:R(.5,.95),T:R(7,13),t:R(0,6)});
+function burst(x,y,n){for(let k=0;k<n;k++){const an=R(0,TAU),v=R(80,460);add({sp:Math.random()<.65?pick(HS):pick(OS),x,y,vx:Math.cos(an)*v,vy:Math.sin(an)*v-120,g:260,s:R(7,20),a:.95,T:R(2.2,4.6),m:1,rv:R(-2,2)})}}
+let lt=0;
+addEventListener('pointermove',e=>{M.tx=e.clientX/W;M.ty=e.clientY/H;const n=performance.now();
+  if(n-lt>40){lt=n;add({sp:pick(OS),x:e.clientX,y:e.clientY,vx:R(-20,20),vy:R(-30,-5),s:R(6,13),a:.8,T:R(.7,1.3),m:1})}});
+addEventListener('pointerdown',e=>burst(e.clientX,e.clientY,14));
+const stars=Array.from({length:reduce?80:230},()=>({x:Math.random(),y:Math.random(),z:R(.2,1),p:R(0,TAU),s:R(.6,1.8)}));
+let shoot=null,next=3,acc=0,last=performance.now();
+for(let k=0;k<(reduce?10:28);k++)fly();
+function frame(now){
+  const dt=Math.min((now-last)/1000,.05);last=now;
+  M.x+=(M.tx-M.x)*.05;M.y+=(M.ty-M.y)*.05;
+  c.setTransform(D,0,0,D,0,0);c.clearRect(0,0,W,H);c.globalCompositeOperation='lighter';
+  c.fillStyle='#fff';
+  for(const s of stars){
+    const x=((s.x*W-(M.x-.5)*60*s.z)%W+W)%W,y=s.y*H-(M.y-.5)*36*s.z;
+    c.globalAlpha=(.2+.8*(.5+.5*Math.sin(now/650*s.s+s.p)))*s.z;
+    c.beginPath();c.arc(x,y,.4+s.z*1.1,0,TAU);c.fill()}
+  next-=dt;if(next<0&&!shoot){shoot={x:R(.4,1)*W,y:R(0,.35)*H,l:1};next=R(5,10)}
+  if(shoot){const vx=-W*.8*dt,vy=H*.4*dt;shoot.x+=vx;shoot.y+=vy;shoot.l-=dt*1.2;
+    const tx=shoot.x-vx*22,ty=shoot.y-vy*22,g=c.createLinearGradient(shoot.x,shoot.y,tx,ty);
+    g.addColorStop(0,'#fff');g.addColorStop(1,'#fff0');c.globalAlpha=Math.max(shoot.l,0);c.strokeStyle=g;c.lineWidth=1.8;
+    c.beginPath();c.moveTo(shoot.x,shoot.y);c.lineTo(tx,ty);c.stroke();if(shoot.l<=0)shoot=null}
+  acc+=dt*rate*(W<600?.7:1)*(reduce?.4:1);
+  while(acc>.45){acc-=.45;rise();if(Math.random()<.9)fly()}
+  for(let k=P.length;k--;){
+    const p=P[k];p.t+=dt;const u=p.t/p.T;if(u>=1){P.splice(k,1);continue}
+    p.vy+=p.g*dt;p.x+=(p.vx+Math.cos(p.t*p.w+p.p)*p.sw)*dt;p.y+=p.vy*dt;
+    c.globalAlpha=p.a*(p.m?1-u:Math.sin(u*Math.PI));
+    c.save();c.translate(p.x,p.y);c.rotate(p.r+p.t*p.rv);c.drawImage(p.sp,-p.s,-p.s,p.s*2,p.s*2);c.restore()}
+  requestAnimationFrame(frame)}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
